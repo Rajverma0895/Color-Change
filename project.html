@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Color Changer & Box Fun</title>
+    <style>
+        :root {
+            --panel-bg: rgba(255, 255, 255, 0.15);
+            --panel-border: rgba(255, 255, 255, 0.2);
+            --text-color: #eee;
+            --button-bg: rgba(0, 123, 255, 0.7);
+            --button-hover-bg: rgba(0, 86, 179, 0.9);
+            --button-active-bg: rgba(0, 60, 120, 0.9);
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            --animation-speed: 0.4s;
+            --background-start: #2a2a72;
+            --background-end: #009ffd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the start */
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            background-attachment: fixed; /* Keep gradient fixed during scroll */
+            margin: 0;
+            padding-top: 30px; /* Add some space at the top */
+            color: var(--text-color);
+            transition: background var(--animation-speed) ease-out;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        .app-container {
+            width: 90%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- Glassmorphism Panel --- */
+        .controls-panel {
+            background: var(--panel-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); /* Safari */
+            border-radius: 15px;
+            border: 1px solid var(--panel-border);
+            box-shadow: var(--box-shadow);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 300;
+            opacity: 0.9;
+            text-align: center;
+            width: 100%;
+            font-size: 1.4em;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--button-bg);
+            color: white;
+            transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        button:active {
+            background-color: var(--button-active-bg);
+            transform: translateY(0px);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        #colorDisplay, #boxCountDisplay {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            min-width: 200px; /* Ensure minimum width */
+            text-align: center;
+        }
+
+        #message {
+            margin-top: 5px; /* Closer to controls */
+            font-size: 1.1em;
+            color: #a7d7ff; /* Light blue for contrast */
+            min-height: 1.5em; /* Prevent layout shift */
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        #message.visible {
+            opacity: 1;
+        }
+
+
+        /* --- Box Container & Styling --- */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px; /* Increased gap */
+            margin-top: 20px;
+            width: 100%;
+            perspective: 1000px; /* For potential 3D effects */
+        }
+
+        .box {
+            width: 60px; /* Slightly larger */
+            height: 60px;
+            background-color: lightgray;
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
+            border-radius: 8px; /* Rounded corners */
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            /* Transition for color changes and hover */
+            transition: background-color 0.3s ease,
+                        transform var(--animation-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), /* Bounce effect */
+                        opacity var(--animation-speed) ease;
+            /* Start hidden for entry animation */
+            opacity: 0;
+            transform: scale(0.5);
+        }
+
+        .box.visible { /* State for when box is added/visible */
+             opacity: 1;
+             transform: scale(1);
+        }
+
+        .box.exiting { /* State for when box is being removed */
+            opacity: 0;
+            transform: scale(0.5) rotate(15deg);
+        }
+
+        .box:hover {
+            transform: scale(1.1) rotate(3deg); /* More playful hover */
+            border-color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Add some responsiveness */
+        @media (max-width: 600px) {
+            .controls-panel {
+                padding: 20px;
+            }
+            button {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+            .box {
+                width: 50px;
+                height: 50px;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+
+        <div class="controls-panel">
+            <div class="control-group">
+                <h2>Background Control</h2>
+                <button onclick="changeBackgroundColor()">Change Background</button>
+                <button onclick="resetBackgroundColor()">Reset Background</button>
+                <div id="colorDisplay">Current Color: #f0f0f0</div>
+            </div>
+
+            <div class="control-group">
+                <h2>Box Controls</h2>
+                <button onclick="addBoxes()">Add Box</button>
+                <button onclick="removeBoxes()">Remove Box</button>
+                <button onclick="removeAllBoxes()">Remove All</button>
+                <button onclick="toggleBoxColors()">Toggle Colors</button>
+            </div>
+             <div id="boxCountDisplay">Total Boxes: 0</div>
+             <div id="message">Click 'Add Box' to start!</div>
+        </div>
+
+        <div class="container" id="boxContainer"></div>
+
+    </div>
+
+    <script>
+        const body = document.body;
+        const colorDisplay = document.getElementById('colorDisplay');
+        const message = document.getElementById('message');
+        const boxContainer = document.getElementById('boxContainer');
+        const boxCountDisplay = document.getElementById('boxCountDisplay');
+
+        const defaultBgColor = '#2a2a72'; // Or use the gradient start color
+        const defaultBgGradient = `linear-gradient(135deg, var(--background-start), var(--background-end))`;
+        const animationSpeedMs = 400; // Match CSS --animation-speed
+
+        let boxCount = 0;
+        const maxBoxes = 50;
+        let boxColorsToggled = false;
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function showMessage(text) {
+            message.textContent = text;
+            message.classList.add('visible');
+            // Optional: fade out message after a delay
+            // setTimeout(() => message.classList.remove('visible'), 3000);
+        }
+
+        function changeBackgroundColor() {
+            const newColor = getRandomColor();
+            body.style.background = newColor; // Set solid color background
+            colorDisplay.textContent = `Current Color: ${newColor}`;
+            showMessage("Background color changed!");
+        }
+
+        function resetBackgroundColor() {
+            body.style.background = defaultBgGradient; // Reset to gradient
+            colorDisplay.textContent = `Current Color: Default Gradient`;
+            showMessage("Background reset to default.");
+        }
+
+
+        function addBoxes() {
+            if (boxCount >= maxBoxes) {
+                showMessage("Maximum number of boxes reached!");
+                return;
+            }
+
+            const newBox = document.createElement('div');
+            newBox.classList.add('box');
+            newBox.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
+
+            // --- NEW: Click listener for individual box ---
+            newBox.addEventListener('click', handleBoxClick);
+            // ---
+
+            boxContainer.appendChild(newBox);
+
+             // --- Animation Trigger ---
+            // Use setTimeout to allow the element to be added to the DOM first
+            setTimeout(() => {
+                 newBox.classList.add('visible');
+            }, 10); // Small delay
+
+            boxCount++;
+            updateBoxCountDisplay();
+            showMessage(`Added a box. Total: ${boxCount}`);
+        }
+
+        function removeBoxes() {
+            if (boxCount === 0) {
+                showMessage("No boxes to remove!");
+                return;
+            }
+
+            const lastBox = boxContainer.lastChild;
+            if (lastBox) {
+                // --- Animate Out ---
+                lastBox.classList.add('exiting');
+
+                // Remove the click listener to prevent interaction during removal
+                lastBox.removeEventListener('click', handleBoxClick);
+
+                // Wait for animation to finish before removing from DOM
+                lastBox.addEventListener('transitionend', () => {
+                     // Check if the box still exists before removing (safety)
+                     if(lastBox.parentNode === boxContainer) {
+                        boxContainer.removeChild(lastBox);
+                     }
+                }, { once: true }); // Listener fires only once
+
+                // Fallback timeout in case transitionend doesn't fire reliably
+                setTimeout(() => {
+                     if(lastBox.parentNode === boxContainer) {
+                        boxContainer.removeChild(lastBox);
+                     }
+                }, animationSpeedMs + 50); // Slightly longer than animation
+
+            }
+
+            boxCount--;
+            updateBoxCountDisplay();
+            showMessage(`Removed a box. Total: ${boxCount}`);
+        }
+
+        function removeAllBoxes() {
+            if (boxCount === 0) {
+                showMessage("No boxes to remove!");
+                return;
+            }
+
+            // Simple removal for all - could be animated but more complex
+            while (boxContainer.firstChild) {
+                // Make sure to remove listeners if they were added individually
+                 boxContainer.firstChild.removeEventListener('click', handleBoxClick);
+                 boxContainer.removeChild(boxContainer.firstChild);
+            }
+            boxCount = 0;
+            updateBoxCountDisplay();
+            showMessage("All boxes removed!");
+        }
+
+        function toggleBoxColors() {
+            if (boxCount === 0) {
+                 showMessage("Add some boxes first!");
+                 return;
+            }
+            const boxes = boxContainer.querySelectorAll('.box');
+            boxColorsToggled = !boxColorsToggled;
+
+            boxes.forEach(box => {
+                // Keep existing transitions, just change the color
+                box.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
+            });
+
+            showMessage(boxColorsToggled ? "Boxes set to light blue!" : "Boxes set to random colors!");
+        }
+
+        // --- NEW: Handler for clicking a single box ---
+        function handleBoxClick(event) {
+             const clickedBox = event.target;
+             const newColor = getRandomColor();
+             clickedBox.style.backgroundColor = newColor;
+             // Optional: show a small temporary message or effect on the box itself
+             console.log("Box color changed to:", newColor);
+        }
+        // ---
+
+        function updateBoxCountDisplay() {
+            boxCountDisplay.textContent = `Total Boxes: ${boxCount}`;
+        }
+
+
+        // --- Initialize ---
+        function initialize() {
+            // Set initial background display text
+            colorDisplay.textContent = `Current Color: Default Gradient`;
+            showMessage("Click 'Add Box' to start!"); // Initial message
+             updateBoxCountDisplay(); // Show 0 initially
+
+            // Optional: Add a few boxes on load
+            // for (let i = 0; i < 3; i++) {
+            //    addBoxes();
+            // }
+        }
+
+        // Run initialization when the DOM is ready
+        document.addEventListener('DOMContentLoaded', initialize);
+
+    </script>
+</body>
+</html>
