@@ -1,223 +1,240 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Color Changer & Box Fun</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Studio</title>
     <style>
         :root {
-            --panel-bg: rgba(255, 255, 255, 0.15);
-            --panel-border: rgba(255, 255, 255, 0.2);
-            --text-color: #eee;
-            --button-bg: rgba(0, 123, 255, 0.7);
-            --button-hover-bg: rgba(0, 86, 179, 0.9);
-            --button-active-bg: rgba(0, 60, 120, 0.9);
-            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            --animation-speed: 0.4s;
-            --background-start: #2a2a72;
-            --background-end: #009ffd;
+            --bg-1: #0f172a;
+            --bg-2: #1d4ed8;
+            --bg-3: #22d3ee;
+            --surface: rgba(255, 255, 255, 0.12);
+            --surface-strong: rgba(255, 255, 255, 0.2);
+            --border: rgba(255, 255, 255, 0.25);
+            --text: #f8fafc;
+            --muted: #cbd5e1;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --shadow: 0 15px 45px rgba(15, 23, 42, 0.35);
+            --speed: 0.35s;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Align items to the start */
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--background-start), var(--background-end));
-            background-attachment: fixed; /* Keep gradient fixed during scroll */
-            margin: 0;
-            padding-top: 30px; /* Add some space at the top */
-            color: var(--text-color);
-            transition: background var(--animation-speed) ease-out;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-        }
-
-        .app-container {
-            width: 90%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* --- Glassmorphism Panel --- */
-        .controls-panel {
-            background: var(--panel-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); /* Safari */
-            border-radius: 15px;
-            border: 1px solid var(--panel-border);
-            box-shadow: var(--box-shadow);
-            padding: 25px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+        * {
             box-sizing: border-box;
         }
 
-        .control-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            width: 100%;
-        }
-        .control-group:last-child {
-            margin-bottom: 0;
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+            color: var(--text);
+            background: linear-gradient(130deg, var(--bg-1), var(--bg-2), var(--bg-3));
+            background-size: 200% 200%;
+            animation: moveBg 12s ease infinite;
+            padding: 2rem 1rem;
         }
 
-        h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-weight: 300;
-            opacity: 0.9;
+        @keyframes moveBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app {
+            width: min(980px, 100%);
+            margin: 0 auto;
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .hero {
             text-align: center;
-            width: 100%;
-            font-size: 1.4em;
+            padding: 1rem;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(1.7rem, 2.8vw, 2.5rem);
+            letter-spacing: -0.03em;
+        }
+
+        .hero p {
+            margin: 0.5rem auto 0;
+            max-width: 600px;
+            color: var(--muted);
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 1.25rem;
+        }
+
+        .controls {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .section h2 {
+            margin: 0 0 0.75rem;
+            font-size: 1rem;
+            color: #e2e8f0;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
             border: none;
-            border-radius: 8px;
-            background-color: var(--button-bg);
+            border-radius: 999px;
+            padding: 0.62rem 1rem;
+            font-weight: 600;
             color: white;
-            transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(90deg, var(--primary), #8b5cf6);
+            cursor: pointer;
+            transition: transform var(--speed), opacity var(--speed), box-shadow var(--speed), filter var(--speed);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
         }
 
         button:hover {
-            background-color: var(--button-hover-bg);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            filter: brightness(1.06);
         }
 
         button:active {
-            background-color: var(--button-active-bg);
-            transform: translateY(0px);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transform: translateY(1px);
         }
 
-        #colorDisplay, #boxCountDisplay {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            padding: 8px 15px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 200px; /* Ensure minimum width */
-            text-align: center;
+        .btn-danger {
+            background: linear-gradient(90deg, #f97316, var(--danger));
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.34);
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #10b981, var(--success));
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.34);
+        }
+
+        .status-grid {
+            display: grid;
+            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            margin-top: 1rem;
+        }
+
+        .pill {
+            border: 1px solid var(--border);
+            background: var(--surface-strong);
+            border-radius: 14px;
+            padding: 0.75rem 0.95rem;
+            font-size: 0.95rem;
         }
 
         #message {
-            margin-top: 5px; /* Closer to controls */
-            font-size: 1.1em;
-            color: #a7d7ff; /* Light blue for contrast */
-            min-height: 1.5em; /* Prevent layout shift */
-            text-align: center;
+            min-height: 1.4em;
+            color: #bfdbfe;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity var(--speed);
         }
+
         #message.visible {
             opacity: 1;
         }
 
-
-        /* --- Box Container & Styling --- */
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px; /* Increased gap */
-            margin-top: 20px;
-            width: 100%;
-            perspective: 1000px; /* For potential 3D effects */
+        #boxContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 0.8rem;
+            align-items: start;
         }
 
         .box {
-            width: 60px; /* Slightly larger */
-            height: 60px;
-            background-color: lightgray;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: var(--box-shadow);
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: #d1d5db;
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.3);
             cursor: pointer;
-            /* Transition for color changes and hover */
-            transition: background-color 0.3s ease,
-                        transform var(--animation-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), /* Bounce effect */
-                        opacity var(--animation-speed) ease;
-            /* Start hidden for entry animation */
             opacity: 0;
-            transform: scale(0.5);
+            transform: scale(0.65);
+            transition: transform var(--speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity var(--speed), background-color 0.25s;
         }
 
-        .box.visible { /* State for when box is added/visible */
-             opacity: 1;
-             transform: scale(1);
+        .box.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        .box.exiting { /* State for when box is being removed */
+        .box.exiting {
             opacity: 0;
-            transform: scale(0.5) rotate(15deg);
+            transform: scale(0.5) rotate(14deg);
         }
 
         .box:hover {
-            transform: scale(1.1) rotate(3deg); /* More playful hover */
-            border-color: rgba(255, 255, 255, 0.7);
+            transform: scale(1.08) rotate(2deg);
         }
 
-        /* Add some responsiveness */
-        @media (max-width: 600px) {
-            .controls-panel {
-                padding: 20px;
-            }
-            button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-            .box {
-                width: 50px;
-                height: 50px;
-            }
-            h2 {
-                font-size: 1.2em;
-            }
+        @media (max-width: 640px) {
+            body { padding: 1rem 0.8rem; }
+            .panel { padding: 1rem; }
+            button { width: 100%; }
+            .button-row { display: grid; grid-template-columns: 1fr; }
         }
-
     </style>
 </head>
 <body>
-    <div class="app-container">
+    <main class="app">
+        <section class="hero">
+            <h1>🎨 Color Studio</h1>
+            <p>Play with a modern gradient backdrop and interactive color boxes.</p>
+        </section>
 
-        <div class="controls-panel">
-            <div class="control-group">
-                <h2>Background Control</h2>
-                <button onclick="changeBackgroundColor()">Change Background</button>
-                <button onclick="resetBackgroundColor()">Reset Background</button>
-                <div id="colorDisplay">Current Color: #f0f0f0</div>
+        <section class="panel">
+            <div class="controls">
+                <div class="section">
+                    <h2>Background</h2>
+                    <div class="button-row">
+                        <button onclick="changeBackgroundColor()">Change Background</button>
+                        <button class="btn-success" onclick="resetBackgroundColor()">Reset Background</button>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Boxes</h2>
+                    <div class="button-row">
+                        <button onclick="addBoxes()">Add Box</button>
+                        <button onclick="removeBoxes()">Remove Box</button>
+                        <button class="btn-danger" onclick="removeAllBoxes()">Remove All</button>
+                        <button class="btn-success" onclick="toggleBoxColors()">Toggle Colors</button>
+                    </div>
+                </div>
             </div>
 
-            <div class="control-group">
-                <h2>Box Controls</h2>
-                <button onclick="addBoxes()">Add Box</button>
-                <button onclick="removeBoxes()">Remove Box</button>
-                <button onclick="removeAllBoxes()">Remove All</button>
-                <button onclick="toggleBoxColors()">Toggle Colors</button>
+            <div class="status-grid">
+                <div class="pill" id="colorDisplay">Current Background: Default Gradient</div>
+                <div class="pill" id="boxCountDisplay">Total Boxes: 0</div>
+                <div class="pill" id="message">Click "Add Box" to start.</div>
             </div>
-             <div id="boxCountDisplay">Total Boxes: 0</div>
-             <div id="message">Click 'Add Box' to start!</div>
-        </div>
+        </section>
 
-        <div class="container" id="boxContainer"></div>
-
-    </div>
+        <section class="panel">
+            <div id="boxContainer"></div>
+        </section>
+    </main>
 
     <script>
         const body = document.body;
@@ -226,9 +243,8 @@
         const boxContainer = document.getElementById('boxContainer');
         const boxCountDisplay = document.getElementById('boxCountDisplay');
 
-        const defaultBgColor = '#2a2a72'; // Or use the gradient start color
-        const defaultBgGradient = `linear-gradient(135deg, var(--background-start), var(--background-end))`;
-        const animationSpeedMs = 400; // Match CSS --animation-speed
+        const defaultBgGradient = 'linear-gradient(130deg, var(--bg-1), var(--bg-2), var(--bg-3))';
+        const animationSpeedMs = 350;
 
         let boxCount = 0;
         const maxBoxes = 50;
@@ -246,45 +262,38 @@
         function showMessage(text) {
             message.textContent = text;
             message.classList.add('visible');
-            // Optional: fade out message after a delay
-            // setTimeout(() => message.classList.remove('visible'), 3000);
         }
 
         function changeBackgroundColor() {
             const newColor = getRandomColor();
-            body.style.background = newColor; // Set solid color background
-            colorDisplay.textContent = `Current Color: ${newColor}`;
-            showMessage("Background color changed!");
+            body.style.background = newColor;
+            body.style.animation = 'none';
+            colorDisplay.textContent = `Current Background: ${newColor}`;
+            showMessage('Background color changed.');
         }
 
         function resetBackgroundColor() {
-            body.style.background = defaultBgGradient; // Reset to gradient
-            colorDisplay.textContent = `Current Color: Default Gradient`;
-            showMessage("Background reset to default.");
+            body.style.background = defaultBgGradient;
+            body.style.animation = 'moveBg 12s ease infinite';
+            colorDisplay.textContent = 'Current Background: Default Gradient';
+            showMessage('Background reset to gradient.');
         }
-
 
         function addBoxes() {
             if (boxCount >= maxBoxes) {
-                showMessage("Maximum number of boxes reached!");
+                showMessage('Maximum number of boxes reached.');
                 return;
             }
 
             const newBox = document.createElement('div');
             newBox.classList.add('box');
-            newBox.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
-
-            // --- NEW: Click listener for individual box ---
+            newBox.style.backgroundColor = boxColorsToggled ? '#7dd3fc' : getRandomColor();
             newBox.addEventListener('click', handleBoxClick);
-            // ---
-
             boxContainer.appendChild(newBox);
 
-             // --- Animation Trigger ---
-            // Use setTimeout to allow the element to be added to the DOM first
             setTimeout(() => {
-                 newBox.classList.add('visible');
-            }, 10); // Small delay
+                newBox.classList.add('visible');
+            }, 10);
 
             boxCount++;
             updateBoxCountDisplay();
@@ -293,33 +302,26 @@
 
         function removeBoxes() {
             if (boxCount === 0) {
-                showMessage("No boxes to remove!");
+                showMessage('No boxes to remove.');
                 return;
             }
 
             const lastBox = boxContainer.lastChild;
             if (lastBox) {
-                // --- Animate Out ---
                 lastBox.classList.add('exiting');
-
-                // Remove the click listener to prevent interaction during removal
                 lastBox.removeEventListener('click', handleBoxClick);
 
-                // Wait for animation to finish before removing from DOM
                 lastBox.addEventListener('transitionend', () => {
-                     // Check if the box still exists before removing (safety)
-                     if(lastBox.parentNode === boxContainer) {
+                    if (lastBox.parentNode === boxContainer) {
                         boxContainer.removeChild(lastBox);
-                     }
-                }, { once: true }); // Listener fires only once
+                    }
+                }, { once: true });
 
-                // Fallback timeout in case transitionend doesn't fire reliably
                 setTimeout(() => {
-                     if(lastBox.parentNode === boxContainer) {
+                    if (lastBox.parentNode === boxContainer) {
                         boxContainer.removeChild(lastBox);
-                     }
-                }, animationSpeedMs + 50); // Slightly longer than animation
-
+                    }
+                }, animationSpeedMs + 50);
             }
 
             boxCount--;
@@ -329,68 +331,50 @@
 
         function removeAllBoxes() {
             if (boxCount === 0) {
-                showMessage("No boxes to remove!");
+                showMessage('No boxes to remove.');
                 return;
             }
 
-            // Simple removal for all - could be animated but more complex
             while (boxContainer.firstChild) {
-                // Make sure to remove listeners if they were added individually
-                 boxContainer.firstChild.removeEventListener('click', handleBoxClick);
-                 boxContainer.removeChild(boxContainer.firstChild);
+                boxContainer.firstChild.removeEventListener('click', handleBoxClick);
+                boxContainer.removeChild(boxContainer.firstChild);
             }
+
             boxCount = 0;
             updateBoxCountDisplay();
-            showMessage("All boxes removed!");
+            showMessage('All boxes removed.');
         }
 
         function toggleBoxColors() {
             if (boxCount === 0) {
-                 showMessage("Add some boxes first!");
-                 return;
+                showMessage('Add some boxes first.');
+                return;
             }
+
             const boxes = boxContainer.querySelectorAll('.box');
             boxColorsToggled = !boxColorsToggled;
-
-            boxes.forEach(box => {
-                // Keep existing transitions, just change the color
-                box.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
+            boxes.forEach((box) => {
+                box.style.backgroundColor = boxColorsToggled ? '#7dd3fc' : getRandomColor();
             });
 
-            showMessage(boxColorsToggled ? "Boxes set to light blue!" : "Boxes set to random colors!");
+            showMessage(boxColorsToggled ? 'Boxes set to sky blue.' : 'Boxes set to random colors.');
         }
 
-        // --- NEW: Handler for clicking a single box ---
         function handleBoxClick(event) {
-             const clickedBox = event.target;
-             const newColor = getRandomColor();
-             clickedBox.style.backgroundColor = newColor;
-             // Optional: show a small temporary message or effect on the box itself
-             console.log("Box color changed to:", newColor);
+            event.target.style.backgroundColor = getRandomColor();
         }
-        // ---
 
         function updateBoxCountDisplay() {
             boxCountDisplay.textContent = `Total Boxes: ${boxCount}`;
         }
 
-
-        // --- Initialize ---
         function initialize() {
-            // Set initial background display text
-            colorDisplay.textContent = `Current Color: Default Gradient`;
-            showMessage("Click 'Add Box' to start!"); // Initial message
-             updateBoxCountDisplay(); // Show 0 initially
-
-            // Optional: Add a few boxes on load
-            // for (let i = 0; i < 3; i++) {
-            //    addBoxes();
-            // }
+            colorDisplay.textContent = 'Current Background: Default Gradient';
+            updateBoxCountDisplay();
+            showMessage('Click "Add Box" to start.');
         }
 
-        // Run initialization when the DOM is ready
         document.addEventListener('DOMContentLoaded', initialize);
-
     </script>
 </body>
 </html>
