@@ -3,220 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Color Changer & Box Fun</title>
+    <title>Modern Color Studio</title>
     <style>
         :root {
-            --panel-bg: rgba(255, 255, 255, 0.15);
-            --panel-border: rgba(255, 255, 255, 0.2);
-            --text-color: #eee;
-            --button-bg: rgba(0, 123, 255, 0.7);
-            --button-hover-bg: rgba(0, 86, 179, 0.9);
-            --button-active-bg: rgba(0, 60, 120, 0.9);
-            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            --animation-speed: 0.4s;
-            --background-start: #2a2a72;
-            --background-end: #009ffd;
+            --surface: rgba(15, 23, 42, 0.62);
+            --surface-border: rgba(148, 163, 184, 0.25);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent: linear-gradient(135deg, #22d3ee, #6366f1);
+            --accent-hover: linear-gradient(135deg, #06b6d4, #4f46e5);
+            --danger: linear-gradient(135deg, #fb7185, #f43f5e);
+            --success: linear-gradient(135deg, #34d399, #10b981);
+            --shadow: 0 24px 50px rgba(15, 23, 42, 0.35);
+            --card-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+            --animation-speed: 0.35s;
+            --background-start: #0f172a;
+            --background-end: #312e81;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Align items to the start */
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--background-start), var(--background-end));
-            background-attachment: fixed; /* Keep gradient fixed during scroll */
-            margin: 0;
-            padding-top: 30px; /* Add some space at the top */
-            color: var(--text-color);
-            transition: background var(--animation-speed) ease-out;
-            overflow-x: hidden; /* Prevent horizontal scroll */
-        }
-
-        .app-container {
-            width: 90%;
-            max-width: 800px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* --- Glassmorphism Panel --- */
-        .controls-panel {
-            background: var(--panel-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px); /* Safari */
-            border-radius: 15px;
-            border: 1px solid var(--panel-border);
-            box-shadow: var(--box-shadow);
-            padding: 25px 30px;
-            margin-bottom: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
+        * {
             box-sizing: border-box;
         }
 
-        .control-group {
-            margin-bottom: 20px;
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
-            flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 16px;
+            color: var(--text-primary);
+            background: radial-gradient(circle at 20% 20%, #1e1b4b, transparent 40%),
+                        radial-gradient(circle at 80% 0%, #0c4a6e, transparent 35%),
+                        linear-gradient(145deg, var(--background-start), var(--background-end));
+            transition: background var(--animation-speed) ease;
         }
-        .control-group:last-child {
-            margin-bottom: 0;
+
+        .app-container {
+            width: min(960px, 100%);
+            display: grid;
+            gap: 20px;
+        }
+
+        .hero {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            padding: 26px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .hero p {
+            margin: 8px 0 0;
+            color: var(--text-secondary);
+        }
+
+        .controls-panel {
+            display: grid;
+            gap: 16px;
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .control-group {
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 18px;
+            padding: 16px;
+            box-shadow: var(--card-shadow);
         }
 
         h2 {
-            margin-top: 0;
-            margin-bottom: 15px;
-            font-weight: 300;
-            opacity: 0.9;
-            text-align: center;
-            width: 100%;
-            font-size: 1.4em;
+            margin: 0 0 12px;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
+            padding: 10px 18px;
             border: none;
-            border-radius: 8px;
-            background-color: var(--button-bg);
-            color: white;
-            transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: var(--accent);
+            transition: transform 0.2s ease, filter 0.2s ease;
         }
 
         button:hover {
-            background-color: var(--button-hover-bg);
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.08);
+            background: var(--accent-hover);
         }
 
         button:active {
-            background-color: var(--button-active-bg);
-            transform: translateY(0px);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transform: translateY(0);
         }
 
-        #colorDisplay, #boxCountDisplay {
-            font-size: 1.1em;
-            margin-bottom: 15px;
-            padding: 8px 15px;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 200px; /* Ensure minimum width */
-            text-align: center;
+        button.danger {
+            background: var(--danger);
+        }
+
+        button.success {
+            background: var(--success);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .status-card {
+            background: rgba(15, 23, 42, 0.75);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 14px;
+            padding: 12px 14px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
 
         #message {
-            margin-top: 5px; /* Closer to controls */
-            font-size: 1.1em;
-            color: #a7d7ff; /* Light blue for contrast */
-            min-height: 1.5em; /* Prevent layout shift */
-            text-align: center;
+            min-height: 1.3rem;
+            color: #93c5fd;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.3s ease;
         }
+
         #message.visible {
             opacity: 1;
         }
 
-
-        /* --- Box Container & Styling --- */
         .container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 15px; /* Increased gap */
-            margin-top: 20px;
+            gap: 14px;
             width: 100%;
-            perspective: 1000px; /* For potential 3D effects */
+            justify-content: center;
+            padding: 8px;
         }
 
         .box {
-            width: 60px; /* Slightly larger */
-            height: 60px;
-            background-color: lightgray;
-            border: 1px solid rgba(255, 255, 255, 0.3); /* Lighter border */
-            border-radius: 8px; /* Rounded corners */
-            box-shadow: var(--box-shadow);
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            background: linear-gradient(135deg, #94a3b8, #64748b);
+            box-shadow: var(--card-shadow);
             cursor: pointer;
-            /* Transition for color changes and hover */
-            transition: background-color 0.3s ease,
-                        transform var(--animation-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275), /* Bounce effect */
-                        opacity var(--animation-speed) ease;
-            /* Start hidden for entry animation */
             opacity: 0;
             transform: scale(0.5);
+            transition: background-color 0.3s ease,
+                        transform var(--animation-speed) cubic-bezier(0.22, 1, 0.36, 1),
+                        opacity var(--animation-speed) ease;
         }
 
-        .box.visible { /* State for when box is added/visible */
-             opacity: 1;
-             transform: scale(1);
+        .box.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        .box.exiting { /* State for when box is being removed */
+        .box.exiting {
             opacity: 0;
-            transform: scale(0.5) rotate(15deg);
+            transform: scale(0.45) rotate(16deg);
         }
 
         .box:hover {
-            transform: scale(1.1) rotate(3deg); /* More playful hover */
-            border-color: rgba(255, 255, 255, 0.7);
+            transform: translateY(-4px) scale(1.08) rotate(2deg);
         }
 
-        /* Add some responsiveness */
-        @media (max-width: 600px) {
+        @media (max-width: 640px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            .hero,
             .controls-panel {
-                padding: 20px;
+                padding: 18px;
+                border-radius: 18px;
             }
-            button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
+
             .box {
-                width: 50px;
-                height: 50px;
-            }
-            h2 {
-                font-size: 1.2em;
+                width: 56px;
+                height: 56px;
             }
         }
-
     </style>
 </head>
 <body>
     <div class="app-container">
+        <section class="hero">
+            <h1>✨ Color Studio Playground</h1>
+            <p>Style the background, create colorful tiles, and tap boxes to remix shades instantly.</p>
+        </section>
 
-        <div class="controls-panel">
+        <section class="controls-panel">
             <div class="control-group">
-                <h2>Background Control</h2>
-                <button onclick="changeBackgroundColor()">Change Background</button>
-                <button onclick="resetBackgroundColor()">Reset Background</button>
-                <div id="colorDisplay">Current Color: #f0f0f0</div>
+                <h2>Background</h2>
+                <div class="button-row">
+                    <button onclick="changeBackgroundColor()">Change Background</button>
+                    <button class="success" onclick="resetBackgroundColor()">Reset Background</button>
+                </div>
             </div>
 
             <div class="control-group">
-                <h2>Box Controls</h2>
-                <button onclick="addBoxes()">Add Box</button>
-                <button onclick="removeBoxes()">Remove Box</button>
-                <button onclick="removeAllBoxes()">Remove All</button>
-                <button onclick="toggleBoxColors()">Toggle Colors</button>
+                <h2>Boxes</h2>
+                <div class="button-row">
+                    <button onclick="addBoxes()">Add Box</button>
+                    <button onclick="removeBoxes()">Remove Box</button>
+                    <button class="danger" onclick="removeAllBoxes()">Remove All</button>
+                    <button class="success" onclick="toggleBoxColors()">Toggle Colors</button>
+                </div>
             </div>
-             <div id="boxCountDisplay">Total Boxes: 0</div>
-             <div id="message">Click 'Add Box' to start!</div>
-        </div>
+
+            <div class="status-grid">
+                <div id="colorDisplay" class="status-card">Current Color: Default Gradient</div>
+                <div id="boxCountDisplay" class="status-card">Total Boxes: 0</div>
+            </div>
+            <div id="message">Click 'Add Box' to start!</div>
+        </section>
 
         <div class="container" id="boxContainer"></div>
-
     </div>
 
     <script>
@@ -226,9 +256,8 @@
         const boxContainer = document.getElementById('boxContainer');
         const boxCountDisplay = document.getElementById('boxCountDisplay');
 
-        const defaultBgColor = '#2a2a72'; // Or use the gradient start color
-        const defaultBgGradient = `linear-gradient(135deg, var(--background-start), var(--background-end))`;
-        const animationSpeedMs = 400; // Match CSS --animation-speed
+        const defaultBgGradient = `radial-gradient(circle at 20% 20%, #1e1b4b, transparent 40%), radial-gradient(circle at 80% 0%, #0c4a6e, transparent 35%), linear-gradient(145deg, var(--background-start), var(--background-end))`;
+        const animationSpeedMs = 350;
 
         let boxCount = 0;
         const maxBoxes = 50;
@@ -246,45 +275,36 @@
         function showMessage(text) {
             message.textContent = text;
             message.classList.add('visible');
-            // Optional: fade out message after a delay
-            // setTimeout(() => message.classList.remove('visible'), 3000);
         }
 
         function changeBackgroundColor() {
             const newColor = getRandomColor();
-            body.style.background = newColor; // Set solid color background
+            body.style.background = newColor;
             colorDisplay.textContent = `Current Color: ${newColor}`;
-            showMessage("Background color changed!");
+            showMessage('Background color changed!');
         }
 
         function resetBackgroundColor() {
-            body.style.background = defaultBgGradient; // Reset to gradient
-            colorDisplay.textContent = `Current Color: Default Gradient`;
-            showMessage("Background reset to default.");
+            body.style.background = defaultBgGradient;
+            colorDisplay.textContent = 'Current Color: Default Gradient';
+            showMessage('Background reset to default.');
         }
-
 
         function addBoxes() {
             if (boxCount >= maxBoxes) {
-                showMessage("Maximum number of boxes reached!");
+                showMessage('Maximum number of boxes reached!');
                 return;
             }
 
             const newBox = document.createElement('div');
             newBox.classList.add('box');
-            newBox.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
-
-            // --- NEW: Click listener for individual box ---
+            newBox.style.backgroundColor = boxColorsToggled ? '#7dd3fc' : getRandomColor();
             newBox.addEventListener('click', handleBoxClick);
-            // ---
 
             boxContainer.appendChild(newBox);
-
-             // --- Animation Trigger ---
-            // Use setTimeout to allow the element to be added to the DOM first
             setTimeout(() => {
-                 newBox.classList.add('visible');
-            }, 10); // Small delay
+                newBox.classList.add('visible');
+            }, 10);
 
             boxCount++;
             updateBoxCountDisplay();
@@ -293,33 +313,26 @@
 
         function removeBoxes() {
             if (boxCount === 0) {
-                showMessage("No boxes to remove!");
+                showMessage('No boxes to remove!');
                 return;
             }
 
             const lastBox = boxContainer.lastChild;
             if (lastBox) {
-                // --- Animate Out ---
                 lastBox.classList.add('exiting');
-
-                // Remove the click listener to prevent interaction during removal
                 lastBox.removeEventListener('click', handleBoxClick);
 
-                // Wait for animation to finish before removing from DOM
                 lastBox.addEventListener('transitionend', () => {
-                     // Check if the box still exists before removing (safety)
-                     if(lastBox.parentNode === boxContainer) {
+                    if (lastBox.parentNode === boxContainer) {
                         boxContainer.removeChild(lastBox);
-                     }
-                }, { once: true }); // Listener fires only once
+                    }
+                }, { once: true });
 
-                // Fallback timeout in case transitionend doesn't fire reliably
                 setTimeout(() => {
-                     if(lastBox.parentNode === boxContainer) {
+                    if (lastBox.parentNode === boxContainer) {
                         boxContainer.removeChild(lastBox);
-                     }
-                }, animationSpeedMs + 50); // Slightly longer than animation
-
+                    }
+                }, animationSpeedMs + 50);
             }
 
             boxCount--;
@@ -329,68 +342,53 @@
 
         function removeAllBoxes() {
             if (boxCount === 0) {
-                showMessage("No boxes to remove!");
+                showMessage('No boxes to remove!');
                 return;
             }
 
-            // Simple removal for all - could be animated but more complex
             while (boxContainer.firstChild) {
-                // Make sure to remove listeners if they were added individually
-                 boxContainer.firstChild.removeEventListener('click', handleBoxClick);
-                 boxContainer.removeChild(boxContainer.firstChild);
+                boxContainer.firstChild.removeEventListener('click', handleBoxClick);
+                boxContainer.removeChild(boxContainer.firstChild);
             }
             boxCount = 0;
             updateBoxCountDisplay();
-            showMessage("All boxes removed!");
+            showMessage('All boxes removed!');
         }
 
         function toggleBoxColors() {
             if (boxCount === 0) {
-                 showMessage("Add some boxes first!");
-                 return;
+                showMessage('Add some boxes first!');
+                return;
             }
+
             const boxes = boxContainer.querySelectorAll('.box');
             boxColorsToggled = !boxColorsToggled;
 
             boxes.forEach(box => {
-                // Keep existing transitions, just change the color
-                box.style.backgroundColor = boxColorsToggled ? 'lightblue' : getRandomColor();
+                box.style.backgroundColor = boxColorsToggled ? '#7dd3fc' : getRandomColor();
             });
 
-            showMessage(boxColorsToggled ? "Boxes set to light blue!" : "Boxes set to random colors!");
+            showMessage(boxColorsToggled ? 'Boxes set to sky blue!' : 'Boxes set to random colors!');
         }
 
-        // --- NEW: Handler for clicking a single box ---
         function handleBoxClick(event) {
-             const clickedBox = event.target;
-             const newColor = getRandomColor();
-             clickedBox.style.backgroundColor = newColor;
-             // Optional: show a small temporary message or effect on the box itself
-             console.log("Box color changed to:", newColor);
+            const clickedBox = event.target;
+            const newColor = getRandomColor();
+            clickedBox.style.backgroundColor = newColor;
+            console.log('Box color changed to:', newColor);
         }
-        // ---
 
         function updateBoxCountDisplay() {
             boxCountDisplay.textContent = `Total Boxes: ${boxCount}`;
         }
 
-
-        // --- Initialize ---
         function initialize() {
-            // Set initial background display text
-            colorDisplay.textContent = `Current Color: Default Gradient`;
-            showMessage("Click 'Add Box' to start!"); // Initial message
-             updateBoxCountDisplay(); // Show 0 initially
-
-            // Optional: Add a few boxes on load
-            // for (let i = 0; i < 3; i++) {
-            //    addBoxes();
-            // }
+            colorDisplay.textContent = 'Current Color: Default Gradient';
+            showMessage("Click 'Add Box' to start!");
+            updateBoxCountDisplay();
         }
 
-        // Run initialization when the DOM is ready
         document.addEventListener('DOMContentLoaded', initialize);
-
     </script>
 </body>
 </html>
